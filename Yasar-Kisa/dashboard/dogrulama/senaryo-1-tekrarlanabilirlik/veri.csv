@@ -1,0 +1,181 @@
+Tarih,Hat,Vardiya,Planli_Sure_dk,Durus_Suresi_dk,Durus_Nedeni,Uretim_Adedi,Hatali_Adet,Cevrim_Suresi_dk
+01.01.2026,Hat-1,Vardiya-3,480,34,Kalıp Değişimi,317,5,1.24
+01.01.2026,Hat-2,Vardiya-1,480,106,Mola,240,7,1.34
+01.01.2026,Hat-3,Vardiya-1,480,31,Malzeme Bekleme,445,16,0.94
+02.01.2026,Hat-1,Vardiya-3,480,103,Mola,293,11,1.13
+02.01.2026,Hat-2,Vardiya-1,480,117,Malzeme Bekleme,266,4,1.22
+02.01.2026,Hat-3,Vardiya-2,480,33,Kalıp Değişimi,389,10,1.03
+03.01.2026,Hat-1,Vardiya-2,480,123,Kalıp Değişimi,265,15,1.24
+03.01.2026,Hat-2,Vardiya-2,480,30,Temizlik,430,23,0.98
+03.01.2026,Hat-3,Vardiya-2,480,93,Malzeme Bekleme,271,5,1.22
+04.01.2026,Hat-1,Vardiya-2,480,30,Malzeme Bekleme,307,10,1.32
+04.01.2026,Hat-2,Vardiya-2,480,40,Arıza,410,18,1.01
+04.01.2026,Hat-3,Vardiya-3,480,102,Kalıp Değişimi,282,13,1.17
+05.01.2026,Hat-1,Vardiya-1,480,79,Ayar,408,18,0.96
+05.01.2026,Hat-2,Vardiya-1,480,107,Arıza,272,5,1.31
+05.01.2026,Hat-3,Vardiya-1,480,123,Arıza,294,16,1.04
+06.01.2026,Hat-1,Vardiya-3,480,132,Mola,330,9,0.99
+06.01.2026,Hat-2,Vardiya-3,480,78,Malzeme Bekleme,369,14,0.96
+06.01.2026,Hat-3,Vardiya-2,480,115,Temizlik,320,8,1.06
+07.01.2026,Hat-1,Vardiya-1,480,85,Ayar,397,6,0.85
+07.01.2026,Hat-2,Vardiya-3,480,40,Mola,359,10,1.05
+07.01.2026,Hat-3,Vardiya-2,480,87,Arıza,275,2,1.38
+08.01.2026,Hat-1,Vardiya-3,480,34,Mola,319,15,1.33
+08.01.2026,Hat-2,Vardiya-2,480,34,Arıza,383,22,1.06
+08.01.2026,Hat-3,Vardiya-3,480,53,Temizlik,311,4,1.26
+09.01.2026,Hat-1,Vardiya-3,480,58,Mola,336,9,1.1
+09.01.2026,Hat-2,Vardiya-1,480,89,Temizlik,269,9,1.35
+09.01.2026,Hat-3,Vardiya-1,480,138,Arıza,248,6,1.33
+10.01.2026,Hat-1,Vardiya-1,480,50,Temizlik,269,9,1.37
+10.01.2026,Hat-2,Vardiya-1,480,117,Temizlik,249,8,1.26
+10.01.2026,Hat-3,Vardiya-3,480,41,Arıza,365,21,1.12
+11.01.2026,Hat-1,Vardiya-3,480,116,Mola,284,8,1.21
+11.01.2026,Hat-2,Vardiya-3,480,103,Arıza,327,5,1.06
+11.01.2026,Hat-3,Vardiya-1,480,28,Arıza,517,20,0.81
+12.01.2026,Hat-1,Vardiya-1,480,29,Mola,336,18,1.18
+12.01.2026,Hat-2,Vardiya-2,480,29,Temizlik,452,9,0.94
+12.01.2026,Hat-3,Vardiya-1,480,112,Temizlik,282,9,1.15
+13.01.2026,Hat-1,Vardiya-2,480,44,Kalıp Değişimi,460,14,0.86
+13.01.2026,Hat-2,Vardiya-2,480,130,Mola,396,16,0.83
+13.01.2026,Hat-3,Vardiya-1,480,71,Mola,396,8,1.0
+14.01.2026,Hat-1,Vardiya-1,480,88,Ayar,389,12,0.88
+14.01.2026,Hat-2,Vardiya-1,480,76,Temizlik,441,16,0.86
+14.01.2026,Hat-3,Vardiya-1,480,31,Malzeme Bekleme,457,9,0.9
+15.01.2026,Hat-1,Vardiya-2,480,135,Kalıp Değişimi,325,9,0.9
+15.01.2026,Hat-2,Vardiya-2,480,56,Ayar,330,16,1.22
+15.01.2026,Hat-3,Vardiya-3,480,111,Ayar,369,21,0.89
+16.01.2026,Hat-1,Vardiya-3,480,114,Temizlik,388,4,0.84
+16.01.2026,Hat-2,Vardiya-2,480,84,Temizlik,437,6,0.89
+16.01.2026,Hat-3,Vardiya-1,480,28,Temizlik,522,15,0.84
+17.01.2026,Hat-1,Vardiya-3,480,51,Temizlik,345,10,1.16
+17.01.2026,Hat-2,Vardiya-3,480,92,Temizlik,346,15,0.99
+17.01.2026,Hat-3,Vardiya-2,480,50,Arıza,389,9,1.04
+18.01.2026,Hat-1,Vardiya-2,480,138,Kalıp Değişimi,395,15,0.81
+18.01.2026,Hat-2,Vardiya-1,480,29,Temizlik,429,24,0.93
+18.01.2026,Hat-3,Vardiya-1,480,132,Malzeme Bekleme,297,15,1.02
+19.01.2026,Hat-1,Vardiya-3,480,58,Temizlik,291,10,1.39
+19.01.2026,Hat-2,Vardiya-3,480,124,Temizlik,342,19,0.98
+19.01.2026,Hat-3,Vardiya-1,480,53,Kalıp Değişimi,306,5,1.33
+20.01.2026,Hat-1,Vardiya-2,480,97,Malzeme Bekleme,273,11,1.23
+20.01.2026,Hat-2,Vardiya-2,480,84,Ayar,406,5,0.95
+20.01.2026,Hat-3,Vardiya-3,480,74,Arıza,438,7,0.83
+21.01.2026,Hat-1,Vardiya-2,480,40,Mola,389,14,1.07
+21.01.2026,Hat-2,Vardiya-1,480,29,Mola,311,16,1.34
+21.01.2026,Hat-3,Vardiya-3,480,90,Malzeme Bekleme,314,8,1.06
+22.01.2026,Hat-1,Vardiya-1,480,135,Arıza,327,4,0.93
+22.01.2026,Hat-2,Vardiya-3,480,133,Ayar,239,13,1.38
+22.01.2026,Hat-3,Vardiya-1,480,130,Malzeme Bekleme,241,13,1.39
+23.01.2026,Hat-1,Vardiya-1,480,42,Mola,310,9,1.35
+23.01.2026,Hat-2,Vardiya-3,480,130,Mola,240,11,1.29
+23.01.2026,Hat-3,Vardiya-1,480,68,Kalıp Değişimi,274,13,1.32
+24.01.2026,Hat-1,Vardiya-2,480,64,Arıza,312,6,1.29
+24.01.2026,Hat-2,Vardiya-3,480,44,Ayar,423,24,1.0
+24.01.2026,Hat-3,Vardiya-2,480,64,Mola,353,18,1.11
+25.01.2026,Hat-1,Vardiya-2,480,140,Kalıp Değişimi,384,7,0.87
+25.01.2026,Hat-2,Vardiya-2,480,24,Kalıp Değişimi,353,17,1.16
+25.01.2026,Hat-3,Vardiya-2,480,97,Temizlik,429,8,0.87
+26.01.2026,Hat-1,Vardiya-1,480,110,Ayar,452,16,0.8
+26.01.2026,Hat-2,Vardiya-3,480,140,Mola,240,7,1.24
+26.01.2026,Hat-3,Vardiya-3,480,137,Arıza,276,4,1.17
+27.01.2026,Hat-1,Vardiya-2,480,84,Arıza,295,13,1.2
+27.01.2026,Hat-2,Vardiya-3,480,36,Malzeme Bekleme,414,18,1.05
+27.01.2026,Hat-3,Vardiya-1,480,98,Temizlik,360,3,0.98
+28.01.2026,Hat-1,Vardiya-2,480,46,Ayar,318,8,1.27
+28.01.2026,Hat-2,Vardiya-2,480,76,Mola,397,21,0.93
+28.01.2026,Hat-3,Vardiya-3,480,41,Mola,475,19,0.85
+29.01.2026,Hat-1,Vardiya-2,480,31,Malzeme Bekleme,329,6,1.2
+29.01.2026,Hat-2,Vardiya-1,480,25,Malzeme Bekleme,305,14,1.39
+29.01.2026,Hat-3,Vardiya-2,480,73,Mola,335,9,1.15
+30.01.2026,Hat-1,Vardiya-2,480,51,Malzeme Bekleme,306,14,1.19
+30.01.2026,Hat-2,Vardiya-1,480,119,Ayar,373,16,0.93
+30.01.2026,Hat-3,Vardiya-2,480,26,Temizlik,462,15,0.95
+31.01.2026,Hat-1,Vardiya-2,480,105,Temizlik,251,14,1.39
+31.01.2026,Hat-2,Vardiya-2,480,98,Mola,259,14,1.34
+31.01.2026,Hat-3,Vardiya-2,480,134,Malzeme Bekleme,252,5,1.25
+01.02.2026,Hat-1,Vardiya-1,480,127,Mola,348,11,0.97
+01.02.2026,Hat-2,Vardiya-1,480,55,Ayar,445,10,0.85
+01.02.2026,Hat-3,Vardiya-2,480,134,Temizlik,354,10,0.85
+02.02.2026,Hat-1,Vardiya-1,480,110,Malzeme Bekleme,399,14,0.84
+02.02.2026,Hat-2,Vardiya-2,480,27,Malzeme Bekleme,314,15,1.3
+02.02.2026,Hat-3,Vardiya-3,480,22,Temizlik,377,10,1.03
+03.02.2026,Hat-1,Vardiya-2,480,129,Ayar,298,14,1.12
+03.02.2026,Hat-2,Vardiya-1,480,82,Malzeme Bekleme,380,11,0.96
+03.02.2026,Hat-3,Vardiya-3,480,106,Ayar,294,16,1.23
+04.02.2026,Hat-1,Vardiya-3,480,88,Kalıp Değişimi,272,11,1.34
+04.02.2026,Hat-2,Vardiya-1,480,102,Ayar,392,4,0.88
+04.02.2026,Hat-3,Vardiya-2,480,61,Malzeme Bekleme,350,18,1.07
+05.02.2026,Hat-1,Vardiya-2,480,116,Ayar,329,3,0.95
+05.02.2026,Hat-2,Vardiya-3,480,26,Arıza,419,24,0.93
+05.02.2026,Hat-3,Vardiya-1,480,116,Kalıp Değişimi,232,2,1.37
+06.02.2026,Hat-1,Vardiya-1,480,50,Malzeme Bekleme,344,19,1.08
+06.02.2026,Hat-2,Vardiya-2,480,109,Arıza,256,10,1.26
+06.02.2026,Hat-3,Vardiya-3,480,111,Kalıp Değişimi,253,6,1.27
+07.02.2026,Hat-1,Vardiya-3,480,23,Arıza,387,11,1.15
+07.02.2026,Hat-2,Vardiya-3,480,45,Kalıp Değişimi,362,8,1.16
+07.02.2026,Hat-3,Vardiya-3,480,118,Arıza,257,4,1.31
+08.02.2026,Hat-1,Vardiya-3,480,120,Kalıp Değişimi,323,9,1.01
+08.02.2026,Hat-2,Vardiya-3,480,102,Arıza,423,14,0.81
+08.02.2026,Hat-3,Vardiya-2,480,66,Mola,284,5,1.33
+09.02.2026,Hat-1,Vardiya-1,480,113,Temizlik,235,11,1.38
+09.02.2026,Hat-2,Vardiya-3,480,119,Ayar,322,12,1.08
+09.02.2026,Hat-3,Vardiya-2,480,129,Malzeme Bekleme,232,12,1.3
+10.02.2026,Hat-1,Vardiya-1,480,116,Ayar,300,8,1.14
+10.02.2026,Hat-2,Vardiya-2,480,128,Arıza,339,16,0.91
+10.02.2026,Hat-3,Vardiya-2,480,55,Temizlik,309,3,1.22
+11.02.2026,Hat-1,Vardiya-1,480,30,Malzeme Bekleme,335,16,1.23
+11.02.2026,Hat-2,Vardiya-3,480,80,Mola,296,3,1.23
+11.02.2026,Hat-3,Vardiya-2,480,48,Ayar,316,12,1.22
+12.02.2026,Hat-1,Vardiya-2,480,90,Temizlik,381,14,1.01
+12.02.2026,Hat-2,Vardiya-2,480,109,Ayar,341,5,0.96
+12.02.2026,Hat-3,Vardiya-1,480,60,Kalıp Değişimi,330,14,1.25
+13.02.2026,Hat-1,Vardiya-1,480,47,Mola,377,22,1.09
+13.02.2026,Hat-2,Vardiya-3,480,96,Arıza,266,6,1.39
+13.02.2026,Hat-3,Vardiya-2,480,42,Arıza,499,11,0.81
+14.02.2026,Hat-1,Vardiya-1,480,90,Arıza,276,14,1.22
+14.02.2026,Hat-2,Vardiya-2,480,33,Kalıp Değişimi,358,11,1.14
+14.02.2026,Hat-3,Vardiya-1,480,26,Arıza,305,15,1.36
+15.02.2026,Hat-1,Vardiya-2,480,82,Kalıp Değişimi,327,5,1.15
+15.02.2026,Hat-2,Vardiya-3,480,58,Kalıp Değişimi,260,12,1.4
+15.02.2026,Hat-3,Vardiya-3,480,96,Temizlik,376,12,0.94
+16.02.2026,Hat-1,Vardiya-2,480,58,Temizlik,270,11,1.39
+16.02.2026,Hat-2,Vardiya-3,480,114,Kalıp Değişimi,234,4,1.37
+16.02.2026,Hat-3,Vardiya-3,480,30,Malzeme Bekleme,443,7,0.94
+17.02.2026,Hat-1,Vardiya-2,480,77,Mola,309,6,1.16
+17.02.2026,Hat-2,Vardiya-3,480,56,Mola,276,5,1.32
+17.02.2026,Hat-3,Vardiya-2,480,120,Mola,301,5,1.15
+18.02.2026,Hat-1,Vardiya-1,480,89,Malzeme Bekleme,320,16,1.19
+18.02.2026,Hat-2,Vardiya-1,480,27,Malzeme Bekleme,329,16,1.28
+18.02.2026,Hat-3,Vardiya-2,480,76,Kalıp Değişimi,333,10,1.08
+19.02.2026,Hat-1,Vardiya-2,480,84,Temizlik,309,3,1.1
+19.02.2026,Hat-2,Vardiya-2,480,114,Arıza,268,5,1.16
+19.02.2026,Hat-3,Vardiya-3,480,127,Temizlik,260,12,1.15
+20.02.2026,Hat-1,Vardiya-2,480,93,Kalıp Değişimi,268,9,1.26
+20.02.2026,Hat-2,Vardiya-2,480,137,Arıza,350,14,0.91
+20.02.2026,Hat-3,Vardiya-2,480,31,Ayar,398,17,1.01
+21.02.2026,Hat-1,Vardiya-1,480,62,Ayar,304,17,1.22
+21.02.2026,Hat-2,Vardiya-3,480,24,Ayar,474,7,0.85
+21.02.2026,Hat-3,Vardiya-2,480,130,Temizlik,230,12,1.29
+22.02.2026,Hat-1,Vardiya-2,480,72,Kalıp Değişimi,403,19,0.91
+22.02.2026,Hat-2,Vardiya-3,480,76,Kalıp Değişimi,406,22,0.92
+22.02.2026,Hat-3,Vardiya-2,480,132,Mola,272,11,1.09
+23.02.2026,Hat-1,Vardiya-1,480,110,Malzeme Bekleme,317,9,0.99
+23.02.2026,Hat-2,Vardiya-1,480,127,Kalıp Değişimi,282,14,1.08
+23.02.2026,Hat-3,Vardiya-2,480,139,Mola,329,10,0.98
+24.02.2026,Hat-1,Vardiya-2,480,80,Malzeme Bekleme,324,6,1.07
+24.02.2026,Hat-2,Vardiya-3,480,85,Mola,287,6,1.33
+24.02.2026,Hat-3,Vardiya-2,480,63,Temizlik,369,17,0.96
+25.02.2026,Hat-1,Vardiya-3,480,94,Mola,308,11,1.09
+25.02.2026,Hat-2,Vardiya-2,480,62,Temizlik,298,16,1.26
+25.02.2026,Hat-3,Vardiya-1,480,109,Malzeme Bekleme,286,13,1.14
+26.02.2026,Hat-1,Vardiya-1,480,60,Mola,379,11,1.08
+26.02.2026,Hat-2,Vardiya-3,480,121,Mola,237,2,1.39
+26.02.2026,Hat-3,Vardiya-3,480,95,Arıza,282,9,1.32
+27.02.2026,Hat-1,Vardiya-3,480,136,Ayar,368,19,0.81
+27.02.2026,Hat-2,Vardiya-1,480,29,Ayar,314,12,1.27
+27.02.2026,Hat-3,Vardiya-2,480,103,Kalıp Değişimi,278,14,1.31
+28.02.2026,Hat-1,Vardiya-2,480,60,Mola,326,17,1.23
+28.02.2026,Hat-2,Vardiya-1,480,99,Kalıp Değişimi,383,9,0.94
+28.02.2026,Hat-3,Vardiya-1,480,115,Kalıp Değişimi,297,12,1.06
+01.03.2026,Hat-1,Vardiya-1,480,76,Malzeme Bekleme,323,3,1.22
+01.03.2026,Hat-2,Vardiya-1,480,57,Arıza,360,13,1.02
+01.03.2026,Hat-3,Vardiya-3,480,107,Malzeme Bekleme,356,19,0.9

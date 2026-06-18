@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALEO · OEE Performans Panosu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg-base:#0e1217;
+    --bg-panel:#161d25;
+    --bg-panel-raised:#1c2530;
+    --bg-inset:#0c1015;
+    --border:#283240;
+    --border-strong:#39465a;
+    --text-primary:#edf1f5;
+    --text-secondary:#8d98a6;
+    --text-tertiary:#5c6773;
+    --accent:#4a90d9;
+    --accent-dim:#2e5c82;
+    --accent-soft:rgba(74,144,217,.14);
+    --good:#45b97c;
+    --good-bg:rgba(69,185,124,.14);
+    --warn:#e3a23c;
+    --warn-bg:rgba(227,162,60,.14);
+    --bad:#e0584c;
+    --bad-bg:rgba(224,88,76,.14);
+    --font-display:'Space Grotesk',-apple-system,'Segoe UI',sans-serif;
+    --font-body:'Inter',-apple-system,'Segoe UI',sans-serif;
+    --font-mono:'JetBrains Mono','Courier New',monospace;
+    --radius:12px;
+    --radius-sm:7px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 520px at 14% -8%, rgba(74,144,217,.10), transparent 60%),
+      var(--bg-base);
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    font-size:14px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--font-display);margin:0;font-weight:600;letter-spacing:.01em;}
+  table{border-collapse:collapse;width:100%;}
+  ::selection{background:var(--accent-dim);}
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px;}
+
+  /* ---------- layout shell ---------- */
+  .app{max-width:1480px;margin:0 auto;padding:18px 24px 48px;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding:16px 22px;background:linear-gradient(180deg,var(--bg-panel-raised),var(--bg-panel));
+    border:1px solid var(--border);border-radius:var(--radius);
+    margin-bottom:14px;flex-wrap:wrap;
+  }
+  .brand{display:flex;flex-direction:column;gap:2px;min-width:150px;}
+  .brand-mark{
+    font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:.06em;
+    color:var(--text-primary);
+  }
+  .brand-mark span{color:var(--accent);}
+  .brand-sub{font-size:11px;color:var(--text-tertiary);letter-spacing:.04em;text-transform:uppercase;}
+  .topbar-title{flex:1;min-width:240px;}
+  .topbar-title h1{font-size:19px;color:var(--text-primary);}
+  .topbar-title p{margin:2px 0 0;font-size:12.5px;color:var(--text-secondary);}
+  .topbar-status{display:flex;align-items:center;gap:14px;}
+  .clock{
+    font-family:var(--font-mono);font-size:20px;font-weight:500;color:var(--text-primary);
+    background:var(--bg-inset);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:7px 12px;min-width:108px;text-align:center;
+  }
+  .shift-badge{
+    font-family:var(--font-mono);font-size:12px;font-weight:600;
+    border:1px solid var(--accent-dim);background:var(--accent-soft);color:var(--accent);
+    border-radius:999px;padding:7px 14px;white-space:nowrap;
+  }
+
+  /* ---------- filter bar ---------- */
+  .filterbar{
+    display:flex;align-items:end;gap:18px;flex-wrap:wrap;
+    padding:14px 18px;background:var(--bg-panel);border:1px solid var(--border);
+    border-radius:var(--radius);margin-bottom:18px;
+  }
+  .filter-group{display:flex;flex-direction:column;gap:5px;}
+  .filter-group label{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.05em;}
+  select{
+    appearance:none;background:var(--bg-inset);color:var(--text-primary);
+    border:1px solid var(--border-strong);border-radius:var(--radius-sm);
+    padding:8px 32px 8px 12px;font-family:var(--font-body);font-size:13px;font-weight:500;
+    min-width:170px;cursor:pointer;
+    background-image:linear-gradient(45deg,transparent 50%,var(--text-secondary) 50%),linear-gradient(135deg,var(--text-secondary) 50%,transparent 50%);
+    background-position:calc(100% - 18px) center, calc(100% - 13px) center;
+    background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+  }
+  select:hover{border-color:var(--accent);}
+  .filter-meta{margin-left:auto;display:flex;flex-direction:column;gap:4px;align-items:flex-end;font-size:12px;color:var(--text-secondary);}
+  .filter-meta .updated{font-family:var(--font-mono);font-size:11.5px;}
+  .filter-meta .updated b{color:var(--text-primary);font-weight:500;}
+
+  /* ---------- hero / gauge cluster ---------- */
+  .hero{
+    display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,0.9fr);
+    gap:16px;margin-bottom:18px;
+  }
+  .gauge-cluster{
+    display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr;gap:12px;
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px 16px 14px;
+  }
+  .gauge-card{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+  .gauge-card svg{width:100%;height:auto;overflow:visible;}
+  .gauge-label{
+    margin-top:2px;text-align:center;font-size:12.5px;font-weight:600;color:var(--text-primary);
+    display:flex;flex-direction:column;gap:1px;
+  }
+  .gauge-card--main .gauge-label{font-size:14px;}
+  .gauge-sub{font-size:10.5px;font-weight:400;color:var(--text-tertiary);}
+
+  .gauge-track{fill:none;stroke:var(--bg-inset);stroke-width:14;stroke-linecap:round;}
+  .gauge-zone{fill:none;stroke-width:14;stroke-linecap:butt;opacity:.9;}
+  .gauge-zone--bad{stroke:var(--bad);}
+  .gauge-zone--warn{stroke:var(--warn);}
+  .gauge-zone--good{stroke:var(--good);}
+  .gauge-tick{stroke:var(--text-tertiary);stroke-width:1.5;}
+  .gauge-tick--major{stroke:var(--text-secondary);stroke-width:2;}
+  .gauge-ticklabel{font-family:var(--font-mono);font-size:9.5px;fill:var(--text-tertiary);}
+  .gauge-target{stroke:#ffffff;stroke-width:2.5;stroke-linecap:round;}
+  .gauge-needle{fill:var(--text-primary);}
+  .gauge-hub{fill:var(--accent);stroke:var(--bg-panel);stroke-width:2;}
+  .gauge-needle-group{transition:transform .7s cubic-bezier(.22,.9,.27,1);transform-box:view-box;}
+  .gauge-value{font-family:var(--font-mono);font-weight:700;fill:var(--text-primary);text-anchor:middle;}
+  .gauge-card--main .gauge-value{font-size:30px;}
+  .gauge-card:not(.gauge-card--main) .gauge-value{font-size:19px;}
+
+  .kpi-side{display:flex;flex-direction:column;gap:10px;}
+  .kpi-card{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:13px 15px;flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center;
+  }
+  .kpi-card--alert{border-color:rgba(224,88,76,.45);background:linear-gradient(180deg,rgba(224,88,76,.08),var(--bg-panel));}
+  .kpi-card__label{font-size:11px;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:.05em;}
+  .kpi-card__value{font-family:var(--font-mono);font-size:22px;font-weight:700;color:var(--text-primary);display:flex;align-items:baseline;gap:6px;}
+  .kpi-card__value small{font-family:var(--font-body);font-size:12px;font-weight:500;color:var(--text-secondary);}
+  .kpi-card__detail{font-size:12px;color:var(--text-secondary);}
+  .kpi-card__detail b{color:var(--text-primary);font-weight:600;}
+  .kpi-bar{height:6px;border-radius:4px;background:var(--bg-inset);overflow:hidden;display:flex;}
+  .kpi-bar span{height:100%;}
+  .tag{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 9px;}
+  .tag.good{background:var(--good-bg);color:var(--good);}
+  .tag.warn{background:var(--warn-bg);color:var(--warn);}
+  .tag.bad{background:var(--bad-bg);color:var(--bad);}
+  .tag::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;}
+  .delta-up{color:var(--good);}
+  .delta-down{color:var(--bad);}
+
+  /* ---------- charts ---------- */
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px;}
+  .chart-card{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 16px 10px;min-height:300px;display:flex;flex-direction:column;
+  }
+  .chart-card__head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap;}
+  .chart-card__head h2{font-size:14.5px;color:var(--text-primary);}
+  .chart-card__hint{font-size:11.5px;color:var(--text-tertiary);font-family:var(--font-mono);}
+  .chart-card canvas{flex:1;max-height:260px;}
+
+  /* ---------- tables ---------- */
+  .table-section{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+  .table-card{
+    background:var(--bg-panel);border:1px solid var(--border);border-radius:var(--radius);
+    padding:16px 16px 8px;
+  }
+  .table-scroll{overflow-x:auto;}
+  th,td{padding:9px 12px;text-align:left;font-size:12.5px;white-space:nowrap;border-bottom:1px solid var(--border);}
+  thead th{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-tertiary);
+    font-weight:600;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--bg-panel);
+  }
+  thead th:hover{color:var(--text-primary);}
+  thead th.sorted::after{content:' ▾';color:var(--accent);}
+  thead th.sorted-asc::after{content:' ▴';color:var(--accent);}
+  tbody tr:hover{background:var(--bg-panel-raised);}
+  td.num,th.num{font-family:var(--font-mono);text-align:right;}
+  td b{font-family:var(--font-mono);}
+
+  /* ---------- footer ---------- */
+  .footnote{
+    margin-top:20px;font-size:11.5px;color:var(--text-tertiary);text-align:center;
+    padding:14px;border-top:1px solid var(--border);
+  }
+
+  @media (max-width:1100px){
+    .hero{grid-template-columns:1fr;}
+    .gauge-cluster{grid-template-columns:repeat(4,1fr);}
+    .charts-grid{grid-template-columns:1fr;}
+    .table-section{grid-template-columns:1fr;}
+  }
+  @media (max-width:680px){
+    .gauge-cluster{grid-template-columns:1fr 1fr;}
+    .topbar{flex-direction:column;align-items:flex-start;}
+    .topbar-status{width:100%;justify-content:space-between;}
+    .filter-meta{margin-left:0;align-items:flex-start;width:100%;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .gauge-needle-group{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">VALE<span>O</span></div>
+      <div class="brand-sub">Bursa Üretim Tesisi</div>
+    </div>
+    <div class="topbar-title">
+      <h1>OEE Performans Panosu</h1>
+      <p>Hat ve vardiya bazında kullanılabilirlik · performans · kalite · duruş analizi</p>
+    </div>
+    <div class="topbar-status">
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="shift-badge" id="activeShiftBadge">Vardiya —</div>
+    </div>
+  </header>
+
+  <section class="filterbar">
+    <div class="filter-group">
+      <label for="filterLine">Üretim Hattı</label>
+      <select id="filterLine"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterShift">Vardiya</label>
+      <select id="filterShift"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterPeriod">Dönem</label>
+      <select id="filterPeriod"></select>
+    </div>
+    <div class="filter-meta">
+      <span id="recordCount"></span>
+      <span class="updated">Son güncelleme: <b id="lastUpdated">—</b></span>
+    </div>
+  </section>
+
+  <main>
+    <section class="hero" aria-label="Genel OEE göstergeleri">
+      <div class="gauge-cluster">
+        <div class="gauge-card gauge-card--main">
+          <svg id="gauge-oee" viewBox="0 0 260 220"></svg>
+          <div class="gauge-label">OEE<span class="gauge-sub">Genel Ekipman Etkinliği</span></div>
+        </div>
+        <div class="gauge-card">
+          <svg id="gauge-avail" viewBox="0 0 160 140"></svg>
+          <div class="gauge-label">Kullanılabilirlik</div>
+        </div>
+        <div class="gauge-card">
+          <svg id="gauge-perf" viewBox="0 0 160 140"></svg>
+          <div class="gauge-label">Performans</div>
+        </div>
+        <div class="gauge-card">
+          <svg id="gauge-qual" viewBox="0 0 160 140"></svg>
+          <div class="gauge-label">Kalite</div>
+        </div>
+      </div>
+
+      <div class="kpi-side">
+        <div class="kpi-card" id="kpiGap">
+          <div class="kpi-card__label">Hedefe Göre Fark (OEE · %85)</div>
+          <div class="kpi-card__value" id="kpiGapValue">—</div>
+          <div class="kpi-card__detail" id="kpiGapDetail">—</div>
+        </div>
+        <div class="kpi-card" id="kpiProduction">
+          <div class="kpi-card__label">Üretim Adedi (Gerçekleşen / Hedef)</div>
+          <div class="kpi-card__value" id="kpiProdValue">—</div>
+          <div class="kpi-bar"><span id="kpiProdBar" style="width:0%;background:var(--accent);"></span></div>
+          <div class="kpi-card__detail" id="kpiProdDetail">—</div>
+        </div>
+        <div class="kpi-card" id="kpiDowntime">
+          <div class="kpi-card__label">Toplam Duruş Süresi</div>
+          <div class="kpi-card__value" id="kpiDownValue">—</div>
+          <div class="kpi-bar">
+            <span id="kpiDownPlanned" style="background:var(--text-tertiary);"></span>
+            <span id="kpiDownUnplanned" style="background:var(--bad);"></span>
+          </div>
+          <div class="kpi-card__detail" id="kpiDownDetail">—</div>
+        </div>
+        <div class="kpi-card kpi-card--alert" id="kpiCritical">
+          <div class="kpi-card__label">En Kritik Hat / Vardiya</div>
+          <div class="kpi-card__value" id="kpiCriticalValue">—</div>
+          <div class="kpi-card__detail" id="kpiCriticalDetail">—</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card__head"><h2>OEE Trend</h2><span class="chart-card__hint" id="trendHint"></span></div>
+        <canvas id="chartTrend"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card__head"><h2>Hat Bazında OEE Bileşenleri</h2><span class="chart-card__hint">Seçili döneme göre</span></div>
+        <canvas id="chartLine"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card__head"><h2>Vardiya Bazında OEE</h2><span class="chart-card__hint">Seçili döneme göre</span></div>
+        <canvas id="chartShift"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card__head"><h2>Duruş Nedenleri – Pareto Analizi</h2><span class="chart-card__hint">Kümülatif %80 çizgisi ile</span></div>
+        <canvas id="chartPareto"></canvas>
+      </div>
+    </section>
+
+    <section class="table-section">
+      <div class="table-card">
+        <div class="chart-card__head"><h2>Hat × Vardiya Detay Tablosu</h2></div>
+        <div class="table-scroll">
+          <table id="detailTable">
+            <thead>
+              <tr>
+                <th data-sort="lineName">Hat</th>
+                <th data-sort="shiftName">Vardiya</th>
+                <th class="num" data-sort="oee">OEE</th>
+                <th class="num" data-sort="availability">Kullanılabilirlik</th>
+                <th class="num" data-sort="performance">Performans</th>
+                <th class="num" data-sort="quality">Kalite</th>
+                <th class="num" data-sort="actualUnits">Üretim (Gerç./Hedef)</th>
+                <th class="num" data-sort="totalDowntime">Duruş (dk)</th>
+                <th>Durum</th>
+              </tr>
+            </thead>
+            <tbody id="detailTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="chart-card__head"><h2>Duruş Nedenleri Detayı</h2></div>
+        <div class="table-scroll">
+          <table id="downtimeTable">
+            <thead>
+              <tr>
+                <th>Neden</th>
+                <th>Kategori</th>
+                <th class="num">Süre (dk)</th>
+                <th class="num">Pay</th>
+                <th class="num">Kümülatif</th>
+                <th>En Çok Etkilenen Hat</th>
+              </tr>
+            </thead>
+            <tbody id="downtimeTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footnote">
+    Bu pano demo amaçlı üretilmiş simüle verilerle hazırlanmıştır; gerçek MES/SCADA veri kaynağına bağlanacak şekilde uyarlanabilir. OEE = Kullanılabilirlik × Performans × Kalite.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ===================== 1. SEEDED RNG & SABİTLER ===================== */
+  function mulberry32(a){
+    return function(){
+      a|=0; a=(a+0x6D2B79F5)|0;
+      let t=Math.imul(a ^ (a>>>15), 1 | a);
+      t=(t+Math.imul(t ^ (t>>>7), 61 | t)) ^ t;
+      return ((t ^ (t>>>14))>>>0)/4294967296;
+    };
+  }
+  const rand = mulberry32(20260617);
+  function randRange(min,max){ return min + rand()*(max-min); }
+
+  const LINES = [
+    { id:'L1', name:'Hat 1 – Silecek Sistemleri',  idealCycleSec:18, baseQuality:.975, baseAvail:.88, basePerf:.92 },
+    { id:'L2', name:'Hat 2 – Elektrik Motorları',   idealCycleSec:24, baseQuality:.965, baseAvail:.82, basePerf:.88 },
+    { id:'L3', name:'Hat 3 – Termal Sistemler',     idealCycleSec:30, baseQuality:.955, baseAvail:.76, basePerf:.85 },
+    { id:'L4', name:'Hat 4 – Aydınlatma Montaj',    idealCycleSec:21, baseQuality:.970, baseAvail:.85, basePerf:.90 },
+  ];
+  const SHIFTS = [
+    { id:'V1', name:'Vardiya 1', time:'06:00–14:00', factor:1.00, startH:6,  endH:14 },
+    { id:'V2', name:'Vardiya 2', time:'14:00–22:00', factor:.97,  startH:14, endH:22 },
+    { id:'V3', name:'Vardiya 3', time:'22:00–06:00', factor:.90,  startH:22, endH:30 },
+  ];
+  const PLANNED_REASONS = ['Planlı Bakım','Vardiya Devir Teslim / Mola','Setup / Kalıp Değişimi'];
+  const UNPLANNED_REASONS = ['Ekipman Arızası','Malzeme Bekleme','Kalite Kontrol Duruşu','Operatör Eksikliği','Enerji Kesintisi','Mikro Duruş / Hat Dengesizliği'];
+  const SHIFT_MIN = 480;
+  const REF_DATE = new Date(2026,5,17); // 17 Haziran 2026 referans
+
+  const LINE_COLOR  = { L1:'#4a90d9', L2:'#3fb6a8', L3:'#e3a23c', L4:'#9b7cd9' };
+  const SHIFT_COLOR = { V1:'#4a90d9', V2:'#3fb6a8', V3:'#e3a23c' };
+
+  const THRESHOLDS = {
+    oee:         { good:85, warn:60 },
+    availability:{ good:90, warn:75 },
+    performance: { good:95, warn:80 },
+    quality:     { good:99, warn:95 },
+  };
+
+  function statusFor(metric, pct){
+    const t = THRESHOLDS[metric];
+    if (pct >= t.good) return { cls:'good', text:'Hedefte' };
+    if (pct >= t.warn) return { cls:'warn', text:'İzlenmeli' };
+    return { cls:'bad', text:'Kritik' };
+  }
+
+  function fmtPct(v){ return v.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1}) + '%'; }
+  function fmtNum(v){ return Math.round(v).toLocaleString('tr-TR'); }
+  function fmtDateShort(iso){
+    const d = new Date(iso+'T00:00:00');
+    return d.toLocaleDateString('tr-TR',{day:'2-digit',month:'short'});
+  }
+
+  /* ===================== 2. VERİ ÜRETİMİ ===================== */
+  function dateLabel(offset){
+    const d = new Date(REF_DATE);
+    d.setDate(d.getDate()-offset);
+    return d.toISOString().slice(0,10);
+  }
+
+  function genRecord(line, shift, dayOffset){
+    const plannedStopMin = randRange(25,45);
+    const plannedProdMin = SHIFT_MIN - plannedStopMin;
+
+    const availTarget = line.baseAvail * shift.factor;
+    let unplannedStopMin = plannedProdMin * (1-availTarget) * randRange(.7,1.3);
+    unplannedStopMin = Math.max(5, Math.min(plannedProdMin*.5, unplannedStopMin));
+
+    const runMin = plannedProdMin - unplannedStopMin;
+    const availability = runMin/plannedProdMin;
+
+    const perfTarget = line.basePerf * shift.factor;
+    const performance = Math.max(.4, Math.min(1.0, perfTarget * randRange(.92,1.08)));
+
+    const theoreticalUnits = Math.floor((runMin*60)/line.idealCycleSec);
+    const actualUnits = Math.floor(theoreticalUnits*performance);
+
+    const quality = Math.max(.6, Math.min(1, line.baseQuality * randRange(.97,1.02)));
+    const goodUnits = Math.floor(actualUnits*quality);
+    const scrapUnits = actualUnits - goodUnits;
+
+    const oee = availability*performance*quality;
+
+    const downtime = {};
+    let remP = plannedStopMin;
+    PLANNED_REASONS.forEach((r,i)=>{
+      const portion = i === PLANNED_REASONS.length-1 ? remP : remP*randRange(.2,.5);
+      downtime[r] = (downtime[r]||0) + portion;
+      remP -= portion;
+    });
+    let remU = unplannedStopMin;
+    UNPLANNED_REASONS.forEach((r,i)=>{
+      const portion = i === UNPLANNED_REASONS.length-1 ? Math.max(0,remU) : remU*randRange(.1,.35);
+      downtime[r] = (downtime[r]||0) + portion;
+      remU -= portion;
+    });
+
+    return {
+      date:dateLabel(dayOffset), dayOffset,
+      lineId:line.id, lineName:line.name,
+      shiftId:shift.id, shiftName:shift.name,
+      plannedProdMin, plannedStopMin, unplannedStopMin, runMin,
+      availability, performance, quality, oee,
+      theoreticalUnits, actualUnits, goodUnits, scrapUnits,
+      totalDowntime: plannedStopMin + unplannedStopMin,
+      downtime
+    };
+  }
+
+  function generateDataset(days){
+    const out = [];
+    for (let d=0; d<days; d++){
+      for (const line of LINES){
+        for (const shift of SHIFTS){
+          out.push(genRecord(line, shift, d));
+        }
+      }
+    }
+    return out;
+  }
+
+  const DATASET = generateDataset(30);
+
+  /* ===================== 3. AGREGASYON ===================== */
+  function aggregate(records){
+    if (!records.length) return null;
+    let plannedProdMin=0, runMin=0, theoreticalUnits=0, actualUnits=0, goodUnits=0, plannedStopMin=0, unplannedStopMin=0;
+    records.forEach(r=>{
+      plannedProdMin += r.plannedProdMin;
+      runMin += r.runMin;
+      theoreticalUnits += r.theoreticalUnits;
+      actualUnits += r.actualUnits;
+      goodUnits += r.goodUnits;
+      plannedStopMin += r.plannedStopMin;
+      unplannedStopMin += r.unplannedStopMin;
+    });
+    const availability = plannedProdMin>0 ? runMin/plannedProdMin : 0;
+    const performance = theoreticalUnits>0 ? actualUnits/theoreticalUnits : 0;
+    const quality = actualUnits>0 ? goodUnits/actualUnits : 0;
+    const oee = availability*performance*quality;
+    return {
+      availability, performance, quality, oee,
+      plannedProdMin, runMin, theoreticalUnits, actualUnits, goodUnits,
+      plannedStopMin, unplannedStopMin, totalDowntime: plannedStopMin+unplannedStopMin,
+      count: records.length
+    };
+  }
+
+  function aggregateDowntime(records){
+    const totals = {};
+    const byLine = {};
+    records.forEach(r=>{
+      Object.entries(r.downtime).forEach(([reason,min])=>{
+        totals[reason] = (totals[reason]||0) + min;
+        byLine[reason] = byLine[reason] || {};
+        byLine[reason][r.lineId] = (byLine[reason][r.lineId]||0) + min;
+      });
+    });
+    const list = Object.keys(totals).map(reason=>({
+      reason, minutes:totals[reason],
+      category: PLANNED_REASONS.includes(reason) ? 'Planlı' : 'Plansız'
+    }));
+    list.sort((a,b)=>b.minutes-a.minutes);
+    const grand = list.reduce((s,x)=>s+x.minutes,0) || 1;
+    let cum = 0;
+    list.forEach(x=>{
+      cum += x.minutes;
+      x.pct = x.minutes/grand*100;
+      x.cumPct = cum/grand*100;
+      const lm = byLine[x.reason];
+      let topLine=null, topVal=-1;
+      Object.entries(lm).forEach(([lid,v])=>{ if(v>topVal){ topVal=v; topLine=lid; } });
+      x.topLine = (LINES.find(l=>l.id===topLine)||{}).name || '—';
+    });
+    return list;
+  }
+
+  function buildTrend(records, lineFilter, shiftFilter){
+    let groupBy = 'single';
+    if (lineFilter === 'all') groupBy = 'line';
+    else if (shiftFilter === 'all') groupBy = 'shift';
+
+    const offsets = [...new Set(records.map(r=>r.dayOffset))].sort((a,b)=>b-a);
+    const labels = offsets.map(o=>{
+      const rec = records.find(r=>r.dayOffset===o);
+      return fmtDateShort(rec.date);
+    });
+
+    let groupIds, colorMap, nameOf;
+    if (groupBy === 'line'){
+      groupIds = LINES.map(l=>l.id); colorMap = LINE_COLOR;
+      nameOf = id => LINES.find(l=>l.id===id).name;
+    } else if (groupBy === 'shift'){
+      groupIds = SHIFTS.map(s=>s.id); colorMap = SHIFT_COLOR;
+      nameOf = id => SHIFTS.find(s=>s.id===id).name;
+    } else {
+      groupIds = ['single']; colorMap = { single:'#4a90d9' };
+      nameOf = () => 'OEE';
+    }
+
+    const series = groupIds.map(gid=>{
+      const data = offsets.map(o=>{
+        const subset = records.filter(r=> r.dayOffset===o && (groupBy==='single' || (groupBy==='line' ? r.lineId===gid : r.shiftId===gid)) );
+        const agg = aggregate(subset);
+        return agg ? +(agg.oee*100).toFixed(1) : null;
+      });
+      return { name:nameOf(gid), color:colorMap[gid], data };
+    });
+
+    return { labels, series, groupBy };
+  }
+
+  /* ===================== 4. GAUGE (ENSTRÜMAN GÖSTERGESİ) ===================== */
+  const NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag,attrs){
+    const e = document.createElementNS(NS,tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  function buildGauge(svg, cfg){
+    const { cx, cy, r, max, good, warn } = cfg;
+    svg.innerHTML = '';
+
+    function angleFor(v){
+      const cl = Math.max(0, Math.min(max, v));
+      return 135 + (cl/max)*270;
+    }
+    function point(deg, radius){
+      const rad = deg*Math.PI/180;
+      return [cx + radius*Math.cos(rad), cy + radius*Math.sin(rad)];
+    }
+    function arcPath(d1, d2, radius){
+      const [x1,y1] = point(d1, radius);
+      const [x2,y2] = point(d2, radius);
+      const large = (d2-d1) > 180 ? 1 : 0;
+      return 'M '+x1+' '+y1+' A '+radius+' '+radius+' 0 '+large+' 1 '+x2+' '+y2;
+    }
+
+    svg.appendChild(svgEl('path',{ d:arcPath(135,405,r), class:'gauge-track' }));
+    svg.appendChild(svgEl('path',{ d:arcPath(angleFor(0),angleFor(warn),r),  class:'gauge-zone gauge-zone--bad' }));
+    svg.appendChild(svgEl('path',{ d:arcPath(angleFor(warn),angleFor(good),r), class:'gauge-zone gauge-zone--warn' }));
+    svg.appendChild(svgEl('path',{ d:arcPath(angleFor(good),angleFor(max),r),  class:'gauge-zone gauge-zone--good' }));
+
+    for (let v=0; v<=max; v+=10){
+      const major = (v % 50 === 0);
+      const [x1,y1] = point(angleFor(v), r+5);
+      const [x2,y2] = point(angleFor(v), r + (major?13:9));
+      svg.appendChild(svgEl('line',{ x1,y1,x2,y2, class:'gauge-tick'+(major?' gauge-tick--major':'') }));
+      if (major){
+        const [tx,ty] = point(angleFor(v), r+25);
+        const t = svgEl('text',{ x:tx, y:ty, class:'gauge-ticklabel', 'text-anchor':'middle' });
+        t.textContent = v;
+        svg.appendChild(t);
+      }
+    }
+
+    const [gx1,gy1] = point(angleFor(good), r-7);
+    const [gx2,gy2] = point(angleFor(good), r+15);
+    svg.appendChild(svgEl('line',{ x1:gx1,y1:gy1,x2:gx2,y2:gy2, class:'gauge-target' }));
+
+    const needleG = svgEl('g',{ class:'gauge-needle-group', transform:'translate('+cx+','+cy+') rotate(135)' });
+    needleG.appendChild(svgEl('polygon',{ points:'0,-3 '+(r*0.8)+',0 0,3 -9,0', class:'gauge-needle' }));
+    needleG.appendChild(svgEl('circle',{ cx:0, cy:0, r:7, class:'gauge-hub' }));
+    svg.appendChild(needleG);
+
+    const valueText = svgEl('text',{ x:cx, y:cy + r*0.5, class:'gauge-value' });
+    valueText.textContent = '0%';
+    svg.appendChild(valueText);
+
+    return { needleG, valueText, angleFor, cx, cy };
+  }
+
+  function setGaugeValue(g, pct){
+    const angle = g.angleFor(pct);
+    g.needleG.setAttribute('transform', 'translate('+g.cx+','+g.cy+') rotate('+angle+')');
+    g.valueText.textContent = fmtPct(pct);
+  }
+
+  const gaugeOee   = buildGauge(document.getElementById('gauge-oee'),   { cx:130, cy:122, r:92, max:100, good:THRESHOLDS.oee.good,          warn:THRESHOLDS.oee.warn });
+  const gaugeAvail = buildGauge(document.getElementById('gauge-avail'), { cx:80,  cy:76,  r:55, max:100, good:THRESHOLDS.availability.good,  warn:THRESHOLDS.availability.warn });
+  const gaugePerf  = buildGauge(document.getElementById('gauge-perf'),  { cx:80,  cy:76,  r:55, max:100, good:THRESHOLDS.performance.good,   warn:THRESHOLDS.performance.warn });
+  const gaugeQual  = buildGauge(document.getElementById('gauge-qual'),  { cx:80,  cy:76,  r:55, max:100, good:THRESHOLDS.quality.good,        warn:THRESHOLDS.quality.warn });
+
+  /* ===================== 5. CHART.JS KURULUMU ===================== */
+  Chart.defaults.font.family = "'Inter', sans-serif";
+  Chart.defaults.font.size = 11;
+  Chart.defaults.color = '#8d98a6';
+
+  const gridCfg = { color:'#222b35', drawTicks:false };
+  const tickPct = { callback:v=>v+'%' };
+
+  const chartTrend = new Chart(document.getElementById('chartTrend'), {
+    type:'line',
+    data:{ labels:[], datasets:[] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, boxHeight:10, padding:12 } } },
+      scales:{
+        x:{ grid:{ display:false }, ticks:{ maxRotation:0 } },
+        y:{ min:0, max:100, grid:gridCfg, ticks:tickPct }
+      }
+    }
+  });
+
+  function makeGroupedBarChart(canvasId){
+    return new Chart(document.getElementById(canvasId), {
+      type:'bar',
+      data:{ labels:[], datasets:[
+        { label:'Kullanılabilirlik', data:[], backgroundColor:'#4a90d9' },
+        { label:'Performans',        data:[], backgroundColor:'#3fb6a8' },
+        { label:'Kalite',            data:[], backgroundColor:'#9b7cd9' },
+        { label:'OEE',               data:[], backgroundColor:'#e3a23c' },
+      ]},
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, boxHeight:10, padding:10 } } },
+        scales:{
+          x:{ grid:{ display:false } },
+          y:{ min:0, max:100, grid:gridCfg, ticks:tickPct }
+        }
+      }
+    });
+  }
+  const chartLine  = makeGroupedBarChart('chartLine');
+  const chartShift = makeGroupedBarChart('chartShift');
+
+  const chartPareto = new Chart(document.getElementById('chartPareto'), {
+    data:{ labels:[], datasets:[
+      { type:'bar',  label:'Duruş (dk)',     data:[], backgroundColor:'#e0584c', yAxisID:'y',  order:2, borderRadius:3 },
+      { type:'line', label:'Kümülatif %',    data:[], borderColor:'#edf1f5', backgroundColor:'#edf1f5', yAxisID:'y1', order:1, tension:.25, pointRadius:3 },
+      { type:'line', label:'%80 Eşiği',      data:[], borderColor:'#5c6773', borderDash:[5,4], pointRadius:0, yAxisID:'y1', order:0 },
+    ]},
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ boxWidth:10, boxHeight:10, padding:10 } } },
+      scales:{
+        x:{ grid:{ display:false }, ticks:{ maxRotation:38, minRotation:38, font:{ size:10 } } },
+        y:{ position:'left', grid:gridCfg, title:{ display:true, text:'dakika', color:'#5c6773', font:{size:10} } },
+        y1:{ position:'right', min:0, max:100, grid:{ display:false }, ticks:tickPct }
+      }
+    }
+  });
+
+  /* ===================== 6. DOM RENDER ===================== */
+  const elLine = document.getElementById('filterLine');
+  const elShift = document.getElementById('filterShift');
+  const elPeriod = document.getElementById('filterPeriod');
+
+  elLine.innerHTML = '<option value="all">Tüm Hatlar</option>' + LINES.map(l=>'<option value="'+l.id+'">'+l.name+'</option>').join('');
+  elShift.innerHTML = '<option value="all">Tüm Vardiyalar</option>' + SHIFTS.map(s=>'<option value="'+s.id+'">'+s.name+' ('+s.time+')</option>').join('');
+  elPeriod.innerHTML = '<option value="7">Son 7 Gün</option><option value="14" selected>Son 14 Gün</option><option value="30">Son 30 Gün</option>';
+
+  let sortState = { key:'oee', dir:'asc' };
+
+  function getFiltered(){
+    const lineFilter = elLine.value;
+    const shiftFilter = elShift.value;
+    const periodDays = parseInt(elPeriod.value, 10);
+    return DATASET.filter(r=>
+      (lineFilter==='all' || r.lineId===lineFilter) &&
+      (shiftFilter==='all' || r.shiftId===shiftFilter) &&
+      (r.dayOffset < periodDays)
+    );
+  }
+
+  function renderGauges(agg){
+    setGaugeValue(gaugeOee,   agg ? agg.oee*100 : 0);
+    setGaugeValue(gaugeAvail, agg ? agg.availability*100 : 0);
+    setGaugeValue(gaugePerf,  agg ? agg.performance*100 : 0);
+    setGaugeValue(gaugeQual,  agg ? agg.quality*100 : 0);
+  }
+
+  function renderKpis(filtered, agg){
+    // Hedefe göre fark
+    const gapVal = document.getElementById('kpiGapValue');
+    const gapDetail = document.getElementById('kpiGapDetail');
+    const oeePct = agg.oee*100;
+    const delta = oeePct - THRESHOLDS.oee.good;
+    gapVal.innerHTML = (delta>=0?'+':'') + fmtPct(delta) + ' <small>(Hedef: %85)</small>';
+    gapVal.style.color = delta>=0 ? 'var(--good)' : 'var(--bad)';
+    gapDetail.innerHTML = 'Gerçekleşen OEE: <b>'+fmtPct(oeePct)+'</b> · Dünya standardı: %85';
+
+    // Üretim
+    const prodVal = document.getElementById('kpiProdValue');
+    const prodBar = document.getElementById('kpiProdBar');
+    const prodDetail = document.getElementById('kpiProdDetail');
+    const attainment = agg.theoreticalUnits>0 ? (agg.goodUnits/agg.theoreticalUnits*100) : 0;
+    prodVal.innerHTML = fmtNum(agg.goodUnits) + ' <small>/ '+fmtNum(agg.theoreticalUnits)+' adet</small>';
+    prodBar.style.width = Math.min(100,attainment)+'%';
+    prodDetail.innerHTML = 'Hedef gerçekleşme: <b>'+fmtPct(attainment)+'</b> · Fire: '+fmtNum(agg.actualUnits-agg.goodUnits)+' adet';
+
+    // Duruş
+    const downVal = document.getElementById('kpiDownValue');
+    const downPlanned = document.getElementById('kpiDownPlanned');
+    const downUnplanned = document.getElementById('kpiDownUnplanned');
+    const downDetail = document.getElementById('kpiDownDetail');
+    downVal.innerHTML = fmtNum(agg.totalDowntime) + ' <small>dakika</small>';
+    const totalDown = agg.totalDowntime || 1;
+    downPlanned.style.width = (agg.plannedStopMin/totalDown*100)+'%';
+    downUnplanned.style.width = (agg.unplannedStopMin/totalDown*100)+'%';
+    downDetail.innerHTML = 'Planlı: <b>'+fmtNum(agg.plannedStopMin)+' dk</b> · Plansız: <b>'+fmtNum(agg.unplannedStopMin)+' dk</b>';
+
+    // Kritik hat/vardiya
+    const rows = buildDetailRows(filtered);
+    const worst = rows.slice().sort((a,b)=>a.oee-b.oee)[0];
+    const critVal = document.getElementById('kpiCriticalValue');
+    const critDetail = document.getElementById('kpiCriticalDetail');
+    if (worst){
+      critVal.textContent = worst.lineName.replace(/^Hat \d+ – /,'') + ' · ' + worst.shiftName;
+      critDetail.innerHTML = 'OEE: <b style="color:var(--bad)">'+fmtPct(worst.oee*100)+'</b> — bu dönemde en düşük performans';
+    } else {
+      critVal.textContent = '—';
+      critDetail.textContent = 'Seçili filtrede veri yok';
+    }
+  }
+
+  function buildDetailRows(filtered){
+    const rows = [];
+    LINES.forEach(line=>{
+      SHIFTS.forEach(shift=>{
+        const subset = filtered.filter(r=>r.lineId===line.id && r.shiftId===shift.id);
+        if (!subset.length) return;
+        const agg = aggregate(subset);
+        rows.push(Object.assign({ lineName:line.name, shiftName:shift.name, lineId:line.id, shiftId:shift.id }, agg));
+      });
+    });
+    return rows;
+  }
+
+  function renderCharts(filtered){
+    const lineFilter = elLine.value;
+    const shiftFilter = elShift.value;
+
+    // Trend
+    const trend = buildTrend(filtered, lineFilter, shiftFilter);
+    chartTrend.data.labels = trend.labels;
+    chartTrend.data.datasets = trend.series.map(s=>({
+      label:s.name, data:s.data, borderColor:s.color, backgroundColor:s.color+'22',
+      tension:.3, pointRadius:2, borderWidth:2, fill:false, spanGaps:true
+    }));
+    chartTrend.data.datasets.push({
+      label:'Dünya Standardı (%85)', data:trend.labels.map(()=>85),
+      borderColor:'#5c6773', borderDash:[5,4], pointRadius:0, borderWidth:1.5
+    });
+    chartTrend.update();
+    document.getElementById('trendHint').textContent =
+      trend.groupBy==='line' ? 'Hat bazında karşılaştırma' : trend.groupBy==='shift' ? 'Vardiya bazında karşılaştırma' : 'Seçili hat / vardiya';
+
+    // Hat bazında
+    const byLine = LINES.map(l=>{
+      const agg = aggregate(filtered.filter(r=>r.lineId===l.id));
+      return { name:l.name.replace(/^Hat (\d+) – .*/,'Hat $1'), agg };
+    }).filter(x=>x.agg);
+    chartLine.data.labels = byLine.map(x=>x.name);
+    chartLine.data.datasets[0].data = byLine.map(x=>+(x.agg.availability*100).toFixed(1));
+    chartLine.data.datasets[1].data = byLine.map(x=>+(x.agg.performance*100).toFixed(1));
+    chartLine.data.datasets[2].data = byLine.map(x=>+(x.agg.quality*100).toFixed(1));
+    chartLine.data.datasets[3].data = byLine.map(x=>+(x.agg.oee*100).toFixed(1));
+    chartLine.update();
+
+    // Vardiya bazında
+    const byShift = SHIFTS.map(s=>{
+      const agg = aggregate(filtered.filter(r=>r.shiftId===s.id));
+      return { name:s.name, agg };
+    }).filter(x=>x.agg);
+    chartShift.data.labels = byShift.map(x=>x.name);
+    chartShift.data.datasets[0].data = byShift.map(x=>+(x.agg.availability*100).toFixed(1));
+    chartShift.data.datasets[1].data = byShift.map(x=>+(x.agg.performance*100).toFixed(1));
+    chartShift.data.datasets[2].data = byShift.map(x=>+(x.agg.quality*100).toFixed(1));
+    chartShift.data.datasets[3].data = byShift.map(x=>+(x.agg.oee*100).toFixed(1));
+    chartShift.update();
+
+    // Pareto
+    const pareto = aggregateDowntime(filtered);
+    chartPareto.data.labels = pareto.map(p=>p.reason);
+    chartPareto.data.datasets[0].data = pareto.map(p=>+p.minutes.toFixed(0));
+    chartPareto.data.datasets[1].data = pareto.map(p=>+p.cumPct.toFixed(1));
+    chartPareto.data.datasets[2].data = pareto.map(()=>80);
+    chartPareto.update();
+
+    return { pareto, byLine, byShift };
+  }
+
+  function renderDetailTable(filtered){
+    let rows = buildDetailRows(filtered);
+    const { key, dir } = sortState;
+    rows.sort((a,b)=>{
+      let av=a[key], bv=b[key];
+      if (typeof av === 'string'){ av=av.toLowerCase(); bv=bv.toLowerCase(); }
+      if (av<bv) return dir==='asc' ? -1 : 1;
+      if (av>bv) return dir==='asc' ? 1 : -1;
+      return 0;
+    });
+    const tbody = document.getElementById('detailTableBody');
+    tbody.innerHTML = rows.map(r=>{
+      const st = statusFor('oee', r.oee*100);
+      return '<tr>'+
+        '<td>'+r.lineName+'</td>'+
+        '<td>'+r.shiftName+'</td>'+
+        '<td class="num"><b>'+fmtPct(r.oee*100)+'</b></td>'+
+        '<td class="num">'+fmtPct(r.availability*100)+'</td>'+
+        '<td class="num">'+fmtPct(r.performance*100)+'</td>'+
+        '<td class="num">'+fmtPct(r.quality*100)+'</td>'+
+        '<td class="num">'+fmtNum(r.goodUnits)+' / '+fmtNum(r.theoreticalUnits)+'</td>'+
+        '<td class="num">'+fmtNum(r.totalDowntime)+'</td>'+
+        '<td><span class="tag '+st.cls+'">'+st.text+'</span></td>'+
+      '</tr>';
+    }).join('') || '<tr><td colspan="9" style="color:var(--text-tertiary);text-align:center;">Seçili filtreyle eşleşen veri yok</td></tr>';
+
+    document.querySelectorAll('#detailTable thead th').forEach(th=>{
+      th.classList.remove('sorted','sorted-asc');
+      if (th.dataset.sort === key) th.classList.add(dir==='asc' ? 'sorted-asc' : 'sorted');
+    });
+  }
+
+  function renderDowntimeTable(pareto){
+    const tbody = document.getElementById('downtimeTableBody');
+    tbody.innerHTML = pareto.map(p=>{
+      const catCls = p.category==='Planlı' ? 'warn' : 'bad';
+      return '<tr>'+
+        '<td>'+p.reason+'</td>'+
+        '<td><span class="tag '+catCls+'">'+p.category+'</span></td>'+
+        '<td class="num">'+fmtNum(p.minutes)+'</td>'+
+        '<td class="num">'+fmtPct(p.pct)+'</td>'+
+        '<td class="num">'+fmtPct(p.cumPct)+'</td>'+
+        '<td>'+p.topLine+'</td>'+
+      '</tr>';
+    }).join('') || '<tr><td colspan="6" style="color:var(--text-tertiary);text-align:center;">Veri yok</td></tr>';
+  }
+
+  function renderAll(){
+    const filtered = getFiltered();
+    const agg = aggregate(filtered) || aggregate([genRecord(LINES[0],SHIFTS[0],0)]); // güvenlik: hiçbir kayıt yoksa boş gösterge çökmesin
+    renderGauges(filtered.length ? agg : null);
+    renderKpis(filtered, filtered.length ? agg : aggregate([]) || agg);
+    const chartsData = renderCharts(filtered);
+    renderDetailTable(filtered);
+    renderDowntimeTable(chartsData.pareto);
+    document.getElementById('recordCount').textContent = filtered.length + ' kayıt (hat × vardiya × gün)';
+    document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('tr-TR');
+  }
+
+  [elLine, elShift, elPeriod].forEach(el=> el.addEventListener('change', renderAll));
+
+  document.querySelectorAll('#detailTable thead th[data-sort]').forEach(th=>{
+    th.addEventListener('click', ()=>{
+      const key = th.dataset.sort;
+      if (sortState.key === key) sortState.dir = sortState.dir==='asc' ? 'desc' : 'asc';
+      else { sortState.key = key; sortState.dir = 'asc'; }
+      renderDetailTable(getFiltered());
+    });
+  });
+
+  /* ===================== 7. SAAT / AKTİF VARDİYA ===================== */
+  function activeShift(now){
+    const h = now.getHours();
+    if (h>=6 && h<14) return SHIFTS[0];
+    if (h>=14 && h<22) return SHIFTS[1];
+    return SHIFTS[2];
+  }
+  function tickClock(){
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('tr-TR');
+    const sh = activeShift(now);
+    document.getElementById('activeShiftBadge').textContent = 'Aktif: '+sh.name+' ('+sh.time+')';
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  /* ===================== 8. İLK RENDER ===================== */
+  renderAll();
+
+})();
+</script>
+</body>
+</html>

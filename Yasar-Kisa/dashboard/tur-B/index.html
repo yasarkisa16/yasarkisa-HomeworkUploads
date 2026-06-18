@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALEO Üretim Dashboard — OEE</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-header__brand">
+    <div class="app-header__mark" aria-hidden="true">V</div>
+    <div class="app-header__titles">
+      <h1>VALEO Üretim Dashboard</h1>
+      <p>OEE İzleme — Üretim Müdürü Görünümü</p>
+    </div>
+  </div>
+  <div class="app-header__meta is-loading" id="syncStatus">
+    <span class="dot" aria-hidden="true"></span>
+    <span id="syncStatusText">Veri kaynağına bağlanıyor…</span>
+  </div>
+</header>
+
+<nav class="tabbar" role="tablist" aria-label="Dashboard ekranları">
+  <button class="tabbar__btn" role="tab" data-screen="e1" aria-selected="true"><span class="num">E1</span>Özet / KPI</button>
+  <button class="tabbar__btn" role="tab" data-screen="e2" aria-selected="false"><span class="num">E2</span>Trend</button>
+  <button class="tabbar__btn" role="tab" data-screen="e3" aria-selected="false"><span class="num">E3</span>Kırılım / Pareto</button>
+  <button class="tabbar__btn" role="tab" data-screen="e4" aria-selected="false"><span class="num">E4</span>Detay / Aksiyon</button>
+</nav>
+
+<div class="filterbar">
+  <div class="field">
+    <label for="fHat">Hat</label>
+    <select id="fHat">
+      <option value="all">Tümü</option>
+    </select>
+  </div>
+  <div class="field">
+    <label for="fVardiya">Vardiya</label>
+    <select id="fVardiya">
+      <option value="all">Tümü</option>
+    </select>
+  </div>
+  <div class="field field--range">
+    <div>
+      <label for="fBaslangic">Başlangıç</label>
+      <input type="date" id="fBaslangic">
+    </div>
+    <div>
+      <label for="fBitis">Bitiş</label>
+      <input type="date" id="fBitis">
+    </div>
+  </div>
+  <button class="btn-reset" id="btnReset" type="button">Filtreleri sıfırla</button>
+  <div class="filterbar__spacer"></div>
+  <div class="filterbar__summary" id="filterSummary"></div>
+</div>
+
+<main class="main">
+
+  <!-- E1 — ÖZET / KPI -->
+  <section class="screen is-active" id="screen-e1" aria-labelledby="e1-title">
+    <div class="screen-head">
+      <div>
+        <h2 id="e1-title">Özet — Genel Bakış</h2>
+        <p>Seçili dönemin en kritik OEE metrikleri, önceki eşit uzunluktaki dönemle kıyaslamalı.</p>
+      </div>
+    </div>
+    <div id="e1-loading" class="skeleton-kpis" hidden>
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+    </div>
+    <div id="e1-error" class="state-box is-error" hidden>
+      <div class="state-box__icon" aria-hidden="true">⚠</div>
+      <h3>Veri okunamadı</h3>
+      <p id="e1-error-msg">veri.csv dosyasına erişilemedi. Bağlı kaynak kontrol edilmeli.</p>
+      <button class="btn-retry" type="button" data-action="retry">Tekrar dene</button>
+    </div>
+    <div id="e1-empty" class="state-box is-empty" hidden>
+      <div class="state-box__icon" aria-hidden="true">∅</div>
+      <h3>Seçili filtrelere uygun veri yok</h3>
+      <p>Hat, vardiya veya tarih aralığı filtrelerini değiştirip yeniden deneyin.</p>
+      <button class="btn-reset" type="button" data-action="reset-filters">Filtreleri sıfırla</button>
+    </div>
+    <div id="e1-content" class="kpi-grid" hidden></div>
+  </section>
+
+  <!-- E2 — TREND -->
+  <section class="screen" id="screen-e2" aria-labelledby="e2-title">
+    <div class="screen-head">
+      <div>
+        <h2 id="e2-title">Trend — Zaman Serisi</h2>
+        <p>Mevcut dönem (mavi) ile öncesindeki eşit uzunluktaki dönem (gri) gün bazında kıyaslanır.</p>
+      </div>
+    </div>
+    <div id="e2-loading" class="skeleton-chart skeleton" hidden></div>
+    <div id="e2-error" class="state-box is-error" hidden>
+      <div class="state-box__icon" aria-hidden="true">⚠</div>
+      <h3>Veri okunamadı</h3>
+      <p>veri.csv dosyasına erişilemedi. Bağlı kaynak kontrol edilmeli.</p>
+      <button class="btn-retry" type="button" data-action="retry">Tekrar dene</button>
+    </div>
+    <div id="e2-empty" class="state-box is-empty" hidden>
+      <div class="state-box__icon" aria-hidden="true">∅</div>
+      <h3>Seçili filtrelere uygun veri yok</h3>
+      <p>Trend görüntülemek için en az bir günlük veri gereklidir.</p>
+      <button class="btn-reset" type="button" data-action="reset-filters">Filtreleri sıfırla</button>
+    </div>
+    <div id="e2-content" hidden>
+      <div class="panel">
+        <div class="panel__head">
+          <h3>Metrik trendi</h3>
+          <div class="panel__controls">
+            <div class="segmented" id="e2-metric-toggle" role="group" aria-label="Trend metriği seçimi"></div>
+          </div>
+        </div>
+        <div class="legend legend--chart">
+          <span class="legend__item"><span class="legend__swatch mevcut" aria-hidden="true"></span>Mevcut dönem</span>
+          <span class="legend__item"><span class="legend__swatch onceki" aria-hidden="true"></span>Önceki dönem</span>
+          <span class="legend__item"><span class="legend__swatch hedef" aria-hidden="true"></span>Hedef eşiği</span>
+        </div>
+        <div id="e2-chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E3 — KIRILIM / PARETO -->
+  <section class="screen" id="screen-e3" aria-labelledby="e3-title">
+    <div class="screen-head">
+      <div>
+        <h2 id="e3-title">Kırılım — Hat / Vardiya / Duruş Nedeni</h2>
+        <p>Seçili dönem için karşılaştırmalı dağılım ve duruş nedenleri Pareto analizi.</p>
+      </div>
+    </div>
+    <div id="e3-loading" class="skeleton-chart skeleton" hidden></div>
+    <div id="e3-error" class="state-box is-error" hidden>
+      <div class="state-box__icon" aria-hidden="true">⚠</div>
+      <h3>Veri okunamadı</h3>
+      <p>veri.csv dosyasına erişilemedi. Bağlı kaynak kontrol edilmeli.</p>
+      <button class="btn-retry" type="button" data-action="retry">Tekrar dene</button>
+    </div>
+    <div id="e3-empty" class="state-box is-empty" hidden>
+      <div class="state-box__icon" aria-hidden="true">∅</div>
+      <h3>Seçili filtrelere uygun veri yok</h3>
+      <p>Kırılım görüntülemek için filtrelerle eşleşen kayıt gereklidir.</p>
+      <button class="btn-reset" type="button" data-action="reset-filters">Filtreleri sıfırla</button>
+    </div>
+    <div id="e3-content" hidden>
+      <div class="panel">
+        <div class="panel__head">
+          <h3>Ortalama OEE karşılaştırması</h3>
+          <div class="panel__controls">
+            <div class="segmented" id="e3-dim-toggle" role="group" aria-label="Kırılım boyutu seçimi"></div>
+          </div>
+        </div>
+        <div id="e3-bar-chart"></div>
+      </div>
+      <div class="panel">
+        <div class="panel__head">
+          <h3>Duruş Nedenleri — Pareto</h3>
+        </div>
+        <div id="e3-pareto-chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- E4 — DETAY / AKSİYON -->
+  <section class="screen" id="screen-e4" aria-labelledby="e4-title">
+    <div class="screen-head">
+      <div>
+        <h2 id="e4-title">Detay — Vardiya Kayıtları ve Aksiyon</h2>
+        <p>Tarih / hat / vardiya bazında kayıtlar; OEE durumuna göre etiketlenmiştir.</p>
+      </div>
+    </div>
+    <div id="e4-loading" class="skeleton-table skeleton" hidden></div>
+    <div id="e4-error" class="state-box is-error" hidden>
+      <div class="state-box__icon" aria-hidden="true">⚠</div>
+      <h3>Veri okunamadı</h3>
+      <p>veri.csv dosyasına erişilemedi. Bağlı kaynak kontrol edilmeli.</p>
+      <button class="btn-retry" type="button" data-action="retry">Tekrar dene</button>
+    </div>
+    <div id="e4-empty" class="state-box is-empty" hidden>
+      <div class="state-box__icon" aria-hidden="true">∅</div>
+      <h3>Seçili filtrelere uygun veri yok</h3>
+      <p>Tabloyu doldurmak için filtrelerle eşleşen kayıt gereklidir.</p>
+      <button class="btn-reset" type="button" data-action="reset-filters">Filtreleri sıfırla</button>
+    </div>
+    <div id="e4-content" hidden>
+      <div class="panel">
+        <div class="panel__head">
+          <h3>Vardiya kayıtları</h3>
+          <p id="e4-count" class="panel__subtext"></p>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table" id="e4-table">
+            <thead><tr id="e4-table-head"></tr></thead>
+            <tbody id="e4-table-body"></tbody>
+          </table>
+        </div>
+        <div class="pagination" id="e4-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <p class="footnote" id="footnote"></p>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

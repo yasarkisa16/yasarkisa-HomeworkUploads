@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VALEO Üretim OEE Panosu</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="uygulama" id="uygulama">
+
+    <header class="app-baslik" role="banner">
+      <div class="app-baslik__marka-blok">
+        <span class="app-baslik__marka">VALEO · Üretim OEE Panosu</span>
+        <span class="app-baslik__alt-baslik" id="baslik-veri-kapsami">Veri kapsamı: —</span>
+      </div>
+      <div class="app-baslik__sag">
+        <div class="app-baslik__meta" id="baslik-son-guncelleme">Son güncelleme: —</div>
+        <button type="button" class="buton buton-baslik" id="yenile-buton"></button>
+      </div>
+    </header>
+
+    <nav class="filtre-cubugu" id="filtre-cubugu" aria-label="Filtreler">
+      <div class="filtre-grup">
+        <label for="filtre-baslangic">Başlangıç</label>
+        <div class="filtre-tarih-cifti">
+          <input type="date" id="filtre-baslangic" class="girdi" />
+          <span class="filtre-tarih-bicimli" id="filtre-baslangic-bicimli"></span>
+        </div>
+      </div>
+      <div class="filtre-grup">
+        <label for="filtre-bitis">Bitiş</label>
+        <div class="filtre-tarih-cifti">
+          <input type="date" id="filtre-bitis" class="girdi" />
+          <span class="filtre-tarih-bicimli" id="filtre-bitis-bicimli"></span>
+        </div>
+      </div>
+      <div class="filtre-grup">
+        <label for="filtre-hat">Hat</label>
+        <select id="filtre-hat" class="secim"><option value="tumu">Tümü</option></select>
+      </div>
+      <div class="filtre-grup">
+        <label for="filtre-vardiya">Vardiya</label>
+        <select id="filtre-vardiya" class="secim"><option value="tumu">Tümü</option></select>
+      </div>
+      <div class="filtre-grup">
+        <label class="gorsel-gizli" for="filtre-sifirla">Filtreleri sıfırla</label>
+        <button type="button" class="buton buton-ikincil" id="filtre-sifirla">Sıfırla</button>
+      </div>
+    </nav>
+
+    <div class="sekme-nav" id="sekme-nav" role="tablist" aria-label="Ekranlar"></div>
+
+    <main class="ekran-icerik" id="ekran-icerik" role="tabpanel" aria-live="polite"></main>
+
+    <div class="durum-katmani" id="durum-katmani" hidden></div>
+  </div>
+
+  <script src="js/veri-katmani.js"></script>
+  <script src="js/uygulama.js"></script>
+</body>
+</html>
